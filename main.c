@@ -44,14 +44,27 @@ char *lsh_read_line(void)
     }
 
     while(1) {
-        //read character
-        c = getchar();
+      //read character
+      c = getchar();
 
-        //If we hit EOF, replace with null character and return
-        if(c == EOF || c == '\n') {
-            
+      //If we hit EOF, replace with null character and return
+      if(c == EOF || c == '\n') {
+        buffer[position] = '\0';
+        return buffer;
+      } else {
+        buffer[position] = c;
+      }
+      position++;
+
+      // If we have exceeded the buffer, reallocate.
+      if (position >= bufsize) {
+        bufsize += LSH_RL_BUFSIZE;
+        buffer = realloc(buffer, bufsize);
+        if (!buffer) {
+          fprint(stderr, "lsh: allocation error\n");
+          exit(EXIT_FAILURE);
         }
+      }
     }
-
 }
 
